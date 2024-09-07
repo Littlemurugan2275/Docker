@@ -1,0 +1,169 @@
+---------------------------------------------------------------------------------------------------------------------------
+				                           Docker Intermediate Commands
+---------------------------------------------------------------------------------------------------------------------------
+===========================================================================================================================
+						                      Docker Container Management
+===========================================================================================================================
+---------------------------------------------------------------------------------------------------------------------------
+1. Run a command in a running container:
+
+>>   docker exec -it [CONTAINER_ID] [COMMAND]
+
+!Example: docker exec -it my_container /bin/bash (opens a bash shell in the container)
+---------------------------------------------------------------------------------------------------------------------------
+2. Attach to the STDOUT/STDERR of a running container:
+
+>>   docker attach [CONTAINER_ID]
+
+!Example: docker attach my_container
+---------------------------------------------------------------------------------------------------------------------------
+3. Show detailed information about a container:
+
+>>   docker inspect [CONTAINER_ID]
+
+!Example: docker inspect my_container
+----------------------------------------------------------------------------------------------------------------------------
+4. Pause a running container:
+
+>>   docker pause [CONTAINER_ID]
+
+!Example: docker pause my_container
+---------------------------------------------------------------------------------------------------------------------------
+5. Unpause a paused container:
+
+>>   docker unpause [CONTAINER_ID]
+
+!Example: docker unpause my_container
+---------------------------------------------------------------------------------------------------------------------------
+6. Show changes to files in a container’s filesystem:
+
+>>   docker diff [CONTAINER_ID]
+
+!Example: docker diff my_container
+---------------------------------------------------------------------------------------------------------------------------
+===========================================================================================================================
+				                          		Docker Image Management
+===========================================================================================================================
+1. Tag an image with a new name or tag:
+
+>>   docker tag [SOURCE_IMAGE] [TARGET_IMAGE]
+
+!Example: docker tag my_image:latest my_repo/my_image:version1.0
+---------------------------------------------------------------------------------------------------------------------------
+2. Save an image to a tarball file:
+
+>>   docker save -o [FILE_PATH] [IMAGE_NAME]
+
+!Example: docker save -o my_image.tar my_image:latest
+---------------------------------------------------------------------------------------------------------------------------
+3. Load an image from a tarball file:
+
+>>   docker load -i [FILE_PATH]
+
+!Example: docker load -i my_image.tar
+---------------------------------------------------------------------------------------------------------------------------
+4. Show the history of an image:
+
+>>   docker history [IMAGE_ID]
+
+!Example: docker history my_image:latest
+---------------------------------------------------------------------------------------------------------------------------
+===========================================================================================================================
+				                          		Docker Volume Management
+===========================================================================================================================
+1. Create a volume:
+
+>>   docker volume create [VOLUME_NAME]
+
+!Example: docker volume create my_volume
+---------------------------------------------------------------------------------------------------------------------------
+2. Show detailed information about a volume:
+
+>>   docker volume inspect [VOLUME_NAME]
+
+!Example: docker volume inspect my_volume
+---------------------------------------------------------------------------------------------------------------------------
+3. Remove all unused volumes:
+
+>>   docker volume prune
+
+!Example: docker volume prune
+---------------------------------------------------------------------------------------------------------------------------
+===========================================================================================================================
+		                              				Docker Network Management
+===========================================================================================================================
+1. Show detailed information about a network:
+
+>>   docker network inspect [NETWORK_NAME]
+
+!Example: docker network inspect my_network
+---------------------------------------------------------------------------------------------------------------------------
+2. Connect a container to a network:
+
+>>   docker network connect [NETWORK_NAME] [CONTAINER_ID]
+
+!Example: docker network connect my_network my_container
+---------------------------------------------------------------------------------------------------------------------------
+3. Disconnect a container from a network:
+
+>>   docker network disconnect [NETWORK_NAME] [CONTAINER_ID]
+
+!Example: docker network disconnect my_network my_container
+---------------------------------------------------------------------------------------------------------------------------
+===========================================================================================================================
+				                                		Docker Compose Commands
+===========================================================================================================================
+1. Start containers as defined in a docker-compose.yml file:
+
+>>   docker-compose up
+
+!Example: docker-compose up
+---------------------------------------------------------------------------------------------------------------------------
+2. Stop and remove containers created by Docker Compose:
+
+>>   docker-compose down
+
+!Example: docker-compose down
+---------------------------------------------------------------------------------------------------------------------------
+3. Rebuild images before starting services:
+
+>>   docker-compose up --build
+
+!Example: docker-compose up --build
+---------------------------------------------------------------------------------------------------------------------------
+4. Scale a service to the specified number of replicas:
+
+>>   docker-compose up --scale [SERVICE]=[NUMBER]
+
+!Example: docker-compose up --scale web=3
+---------------------------------------------------------------------------------------------------------------------------
+5. Validate and view the configuration of a docker-compose.yml file:
+
+>>   docker-compose config
+
+!Example: docker-compose config
+---------------------------------------------------------------------------------------------------------------------------
+6. Run a one-time command against a service container:
+
+>>   docker-compose run [SERVICE] [COMMAND]
+
+!Example: docker-compose run web bash
+---------------------------------------------------------------------------------------------------------------------------
+7. View logs from services defined in a docker-compose.yml file:
+
+>>   docker-compose logs
+
+!Example: docker-compose logs
+---------------------------------------------------------------------------------------------------------------------------
+8. Stop and remove containers and associated volumes:
+
+>>   docker-compose down --volumes
+
+!Example: docker-compose down --volumes
+---------------------------------------------------------------------------------------------------------------------------
+9. Remove containers for services not defined in the docker-compose.yml file:
+
+>>   docker-compose down --remove-orphans
+
+!Example: docker-compose down --remove-orphans
+---------------------------------------------------------------------------------------------------------------------------

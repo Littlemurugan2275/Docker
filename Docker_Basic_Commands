@@ -1,86 +1,147 @@
--------------------------------------------------------------------
-## Docker Basics::
--------------------------------------------------------------------
-1.Check the Docker version installed on your system:
->> docker --version 
+===========================================================================================================================
+---------------------------------------------------------------------------------------------------------------------------
+			                              			Docker Basics Commands
+---------------------------------------------------------------------------------------------------------------------------
+===========================================================================================================================
+						                                    Docker Basics
+===========================================================================================================================
+1. Check the Docker version installed on your system:
 
+docker --version
+
+!Example: Docker version 24.0.0, build 1234567
+---------------------------------------------------------------------------------------------------------------------------
 2. Display system-wide information about Docker:
->> docker info
 
+docker info
+!Example: Displays details about Docker Engine, number of containers, images, and more.
+---------------------------------------------------------------------------------------------------------------------------
 3. Get help on Docker commands:
->> docker help
 
--------------------------------------------------------------------
-## Docker Container Commands::
--------------------------------------------------------------------
-1. Run a container from an image
->> docker run [OPTIONS] IMAGE [COMMAND] [ARG...]: 
+docker help
+!Example: Lists available Docker commands and their usage.
+===========================================================================================================================
+				                          		Docker Container Commands
+===========================================================================================================================
+1. Run a container from an image:
+
+docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
 !Example: docker run -d nginx (runs NGINX container in detached mode)
-
+---------------------------------------------------------------------------------------------------------------------------
 2. List running containers:
->> docker ps
-!Note:Add -a to list all containers (running and stopped)
 
+docker ps
+
+!Note: Add -a to list all containers (running and stopped)
+!Example: docker ps -a
+---------------------------------------------------------------------------------------------------------------------------
 3. Stop a running container:
->> docker stop [CONTAINER_ID] 
 
+docker stop [CONTAINER_ID]
+
+!Example: docker stop my_container
+---------------------------------------------------------------------------------------------------------------------------
 4. Start a stopped container:
->> docker start [CONTAINER_ID]
 
+docker start [CONTAINER_ID]
+
+!Example: docker start my_container
+---------------------------------------------------------------------------------------------------------------------------
 5. Restart a container:
->> docker restart [CONTAINER_ID] 
 
+docker restart [CONTAINER_ID]
+
+!Example: docker restart my_container
+---------------------------------------------------------------------------------------------------------------------------
 6. Remove a container:
->> docker rm [CONTAINER_ID] 
 
+docker rm [CONTAINER_ID]
+
+!Example: docker rm my_container
+---------------------------------------------------------------------------------------------------------------------------
 7. Fetch logs from a container:
->> docker logs [CONTAINER_ID] 
 
--------------------------------------------------------------------
-## Docker Image Commands::
--------------------------------------------------------------------
+docker logs [CONTAINER_ID]
+
+!Example: docker logs my_container
+===========================================================================================================================
+						                                Docker Image Commands
+===========================================================================================================================
 1. Download an image from Docker Hub:
->> docker pull [IMAGE_NAME] 
 
+docker pull [IMAGE_NAME]
+
+!Example: docker pull nginx
+---------------------------------------------------------------------------------------------------------------------------
 2. List downloaded Docker images:
->> docker images
 
+docker images
+
+!Example: docker images
+---------------------------------------------------------------------------------------------------------------------------
 3. Remove an image:
->> docker rmi [IMAGE_ID]
 
+docker rmi [IMAGE_ID]
+
+!Example: docker rmi nginx:latest
+---------------------------------------------------------------------------------------------------------------------------
 4. Build an image from a Dockerfile:
->> docker build [OPTIONS] PATH
 
--------------------------------------------------------------------
-## Docker Volume Commands::
--------------------------------------------------------------------
+docker build [OPTIONS] PATH
+!Example: docker build -t my_image:latest .
+===========================================================================================================================
+					                            	Docker Volume Commands
+===========================================================================================================================
 1. Create a volume:
->> docker volume create [VOLUME_NAME] 
 
+docker volume create [VOLUME_NAME]
+
+!Example: docker volume create my_volume
+---------------------------------------------------------------------------------------------------------------------------
 2. List all volumes:
->> docker volume ls
 
+docker volume ls
+
+!Example: docker volume ls
+---------------------------------------------------------------------------------------------------------------------------
 3. Remove a volume:
->> docker volume rm [VOLUME_NAME]
 
--------------------------------------------------------------------
-## Docker Network Commands::
--------------------------------------------------------------------
+docker volume rm [VOLUME_NAME]
+
+!Example: docker volume rm my_volume
+===========================================================================================================================
+					                            	Docker Network Commands
+===========================================================================================================================
 1. List all networks:
->> docker network ls 
 
+docker network ls
+
+!Example: docker network ls
+---------------------------------------------------------------------------------------------------------------------------
 2. Create a custom network:
->> docker network create [NETWORK_NAME]
 
+docker network create [NETWORK_NAME]
+
+!Example: docker network create my_network
+---------------------------------------------------------------------------------------------------------------------------
 3. Remove a network:
->> docker network rm [NETWORK_NAME] 
 
--------------------------------------------------------------------
-## Docker Compose Commands (if using Docker Compose)::
--------------------------------------------------------------------
+docker network rm [NETWORK_NAME]
+
+!Example: docker network rm my_network
+===========================================================================================================================
+  		            	       Docker Compose Commands (if using Docker Compose)
+===========================================================================================================================
 1. Start containers as defined in a docker-compose.yml file:
->> docker-compose up
 
+docker-compose up
+
+!Example: docker-compose up
+---------------------------------------------------------------------------------------------------------------------------
 2. Stop and remove containers created by Docker Compose:
->> docker-compose down
-===================================================================
+
+docker-compose down
+
+!Example: docker-compose down
+---------------------------------------------------------------------------------------------------------------------------

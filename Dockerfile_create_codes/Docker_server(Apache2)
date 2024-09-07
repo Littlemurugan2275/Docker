@@ -1,0 +1,743 @@
+===========================================================================================================================
+---------------------------------------------------------------------------------------------------------------------------
+                        Dockerfile For all Linux OS with only Apache2 Server
+                                  OS: Ubuntu:Latest	Server: Apache2
+---------------------------------------------------------------------------------------------------------------------------
+===========================================================================================================================
+---------------------------------------------------------------------------------------------------------------------------
+                                        01 - Basic Apache2 Setup
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2
+RUN apt-get update && apt-get install -y apache2
+
+# Copy local index.html to the container
+COPY index.html /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                  02 - Apache2 with Custom Configuration
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2
+RUN apt-get update && apt-get install -y apache2
+
+# Remove default configuration
+RUN rm /etc/apache2/sites-enabled/000-default.conf
+
+# Copy custom configuration
+COPY apache-custom.conf /etc/apache2/sites-available/000-default.conf
+
+# Copy local index.html
+COPY index.html /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                          03 - Apache2 with PHP
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and PHP
+RUN apt-get update && apt-get install -y apache2 php libapache2-mod-php
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local index.php to the container
+COPY index.php /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+---------------------------------------------------------------------------------------------------------------------------
+                                      04 - Apache2 with MySQL Support
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, PHP, and MySQL client
+RUN apt-get update && apt-get install -y apache2 php libapache2-mod-php mysql-client
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local index.php
+COPY index.php /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                        05 - Apache2 with SSL Support
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and OpenSSL
+RUN apt-get update && apt-get install -y apache2 openssl
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy SSL certificates and Apache configuration
+COPY ssl/ /etc/ssl/
+COPY apache-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+
+# Enable SSL module and site
+RUN a2enmod ssl && a2ensite default-ssl
+
+# Copy local index.html
+COPY index.html /var/www/html/
+
+# Expose ports 80 and 443
+EXPOSE 80 443
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                  06 - Apache2 with Multiple Virtual Hosts
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2
+RUN apt-get update && apt-get install -y apache2
+
+# Remove default configuration
+RUN rm /etc/apache2/sites-enabled/000-default.conf
+
+# Copy virtual host configurations
+COPY vhost1.conf /etc/apache2/sites-available/vhost1.conf
+COPY vhost2.conf /etc/apache2/sites-available/vhost2.conf
+
+# Enable virtual hosts
+RUN a2ensite vhost1 && a2ensite vhost2
+
+# Copy local web content
+COPY site1/ /var/www/site1/
+COPY site2/ /var/www/site2/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                      07 - Apache2 with PHP and MySQL
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, PHP, and MySQL
+RUN apt-get update && apt-get install -y apache2 php libapache2-mod-php php-mysql mysql-client
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local PHP files
+COPY index.php /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                          08 - Apache2 with Node.js
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and Node.js
+RUN apt-get update && \
+    apt-get install -y apache2 curl && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local index.html
+COPY index.html /var/www/html/
+
+# Copy Node.js application
+COPY app/ /app
+WORKDIR /app
+RUN npm install
+
+# Expose ports for Apache and Node.js
+EXPOSE 80 3000
+
+# Start Apache2 and Node.js
+CMD ["sh", "-c", "node /app/server.js & apache2ctl -D FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                        09 - Apache2 with Django (Python)
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, Python, and mod_wsgi
+RUN apt-get update && \
+    apt-get install -y apache2 python3 python3-pip apache2-dev && \
+    pip3 install Django mod_wsgi
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy Django project and configuration
+COPY django_project/ /var/www/django_project/
+COPY apache-django.conf /etc/apache2/sites-available/000-default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                          10 - Apache2 with Redis
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, PHP, and Redis
+RUN apt-get update && \
+    apt-get install -y apache2 php libapache2-mod-php php-redis redis-server
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local PHP files
+COPY index.php /var/www/html/
+
+# Expose ports for Apache and Redis
+EXPOSE 80 6379
+
+# Start Redis and Apache2
+CMD ["sh", "-c", "redis-server & apache2ctl -D FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                        11 - Apache2 with MongoDB
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, PHP, and MongoDB
+RUN apt-get update && \
+    apt-get install -y apache2 php libapache2-mod-php php-mongodb mongodb
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local PHP files
+COPY index.php /var/www/html/
+
+# Expose ports for Apache and MongoDB
+EXPOSE 80 27017
+
+# Start Apache2 and MongoDB
+CMD ["sh", "-c", "mongod & apache2ctl -D FOREGROUND"]
+---------------------------------------------------------------------------------------------------------------------------
+                                    12 - Apache2 with Docker Compose
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and Docker Compose
+RUN apt-get update && \
+    apt-get install -y apache2 docker.io docker-compose
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local files
+COPY index.html /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2 and Docker Compose
+CMD ["sh", "-c", "apache2ctl -D FOREGROUND && docker-compose up"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                              13 - Apache2 with a Static Site Generator (Jekyll)
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and Jekyll
+RUN apt-get update && \
+    apt-get install -y apache2 ruby-full build-essential && \
+    gem install jekyll bundler
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy Jekyll site and build it
+COPY site /site
+WORKDIR /site
+RUN jekyll build -d /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                  14 - Apache2 with Certbot for Let's Encrypt
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, Certbot, and Python
+RUN apt-get update && \
+    apt-get install -y apache2 certbot python3-certbot-apache
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local files
+COPY index.html /var/www/html/
+
+# Expose port 80 and 443
+EXPOSE 80 443
+
+# Start Apache2 and Certbot
+CMD ["sh", "-c", "certbot --apache && apache2ctl -D FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                            15 - Apache2 with a Load Balancer (HAProxy)
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and HAProxy
+RUN apt-get update && \
+    apt-get install -y apache2 haproxy
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local Apache configuration and HAProxy configuration
+COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
+COPY haproxy.cfg /etc/haproxy/haproxy.cfg
+
+# Copy local web content
+COPY index.html /var/www/html/
+
+# Expose ports for Apache and HAProxy
+EXPOSE 80 443
+
+# Start Apache2 and HAProxy
+CMD ["sh", "-c", "service haproxy start && apache2ctl -D FOREGROUND"]
+In this setup:
+
+!! Apache2 is serving as the backend web server.
+HAProxy is configured as a load balancer, distributing incoming traffic to one or more backend servers.
+You would need to adjust the haproxy.cfg to point to your backend servers (if you have multiple) and configure it 
+to balance the load appropriately. Similarly, the apache-config.conf would contain your Apache virtual host settings.
+
+---------------------------------------------------------------------------------------------------------------------------
+                                  16 - Apache2 with a Simple Web Application
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and required packages
+RUN apt-get update && \
+    apt-get install -y apache2 git
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Clone a sample web application from GitHub
+RUN git clone https://github.com/example/sample-web-app.git /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                    17 - Apache2 with a Python Flask Application
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, Python, and mod_wsgi
+RUN apt-get update && \
+    apt-get install -y apache2 python3 python3-pip python3-dev apache2-dev && \
+    pip3 install flask mod_wsgi
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy Flask application and WSGI configuration
+COPY flask-app/ /var/www/flask-app/
+COPY flask-app.wsgi /var/www/flask-app/flask-app.wsgi
+
+# Configure Apache to use WSGI
+COPY apache-flask.conf /etc/apache2/sites-available/000-default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                        18 - Apache2 with Git for Deployment
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and Git
+RUN apt-get update && \
+    apt-get install -y apache2 git
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Clone a repository into the Apache web directory
+RUN git clone https://github.com/example/repo.git /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                      19 - Apache2 with Automated Backups
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and backup tools
+RUN apt-get update && \
+    apt-get install -y apache2 rsync cron
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local web content and backup scripts
+COPY index.html /var/www/html/
+COPY backup.sh /usr/local/bin/backup.sh
+COPY crontab /etc/cron.d/backup
+
+# Set permissions for the backup script
+RUN chmod +x /usr/local/bin/backup.sh
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2 and Cron
+CMD ["sh", "-c", "cron && apache2ctl -D FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                        20 - Apache2 with a Static Site and Environment Variables
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2
+RUN apt-get update && \
+    apt-get install -y apache2
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local index.html and set environment variables
+COPY index.html /var/www/html/
+ENV SITE_NAME="My Static Site"
+ENV SITE_OWNER="John Doe"
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                          21 - Apache2 with Node.js Proxy
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and Node.js
+RUN apt-get update && \
+    apt-get install -y apache2 curl && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local web content
+COPY index.html /var/www/html/
+
+# Copy Node.js application and configure Apache as a reverse proxy
+COPY node-app/ /node-app
+COPY apache-node.conf /etc/apache2/sites-available/000-default.conf
+
+# Expose ports for Apache and Node.js
+EXPOSE 80 3000
+
+# Start Apache2 and Node.js
+CMD ["sh", "-c", "node /node-app/server.js & apache2ctl -D FOREGROUND"]
+---------------------------------------------------------------------------------------------------------------------------
+                              22 - Apache2 with Application Monitoring (Prometheus)
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, Prometheus Node Exporter
+RUN apt-get update && \
+    apt-get install -y apache2 prometheus-node-exporter
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local web content
+COPY index.html /var/www/html/
+
+# Expose ports for Apache and Prometheus
+EXPOSE 80 9100
+
+# Start Apache2 and Prometheus Node Exporter
+CMD ["sh", "-c", "prometheus-node-exporter & apache2ctl -D FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                        23 - Apache2 with Custom User Permissions
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2
+RUN apt-get update && \
+    apt-get install -y apache2
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local files and set custom permissions
+COPY index.html /var/www/html/
+RUN chown -R www-data:www-data /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                        24 - Apache2 with Multiple Docker Containers (using Docker-in-Docker)
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2 and Docker
+RUN apt-get update && \
+    apt-get install -y apache2 docker.io
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local files
+COPY index.html /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2 and Docker
+CMD ["sh", "-c", "apache2ctl -D FOREGROUND && docker run -d my-docker-image"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                    25 - Apache2 with Advanced Security (Fail2Ban)
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, Fail2Ban
+RUN apt-get update && \
+    apt-get install -y apache2 fail2ban
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local files and Fail2Ban configuration
+COPY index.html /var/www/html/
+COPY jail.local /etc/fail2ban/jail.local
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2 and Fail2Ban
+CMD ["sh", "-c", "fail2ban-server && apache2ctl -D FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                          26 - Apache2 with PHP and Composer
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, PHP, and Composer
+RUN apt-get update && \
+    apt-get install -y apache2 php libapache2-mod-php curl && \
+    curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
+
+# Remove default Apache web page
+RUN rm -rf /var/www/html/*
+
+# Copy local PHP files
+COPY index.php /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+---------------------------------------------------------------------------------------------------------------------------
+                                      27 - Apache2 with a CMS (WordPress)
+---------------------------------------------------------------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Apache2, PHP, and WordPress
+RUN apt-get update && \
+    apt-get install -y apache2 php libapache2-mod-php wget php-mysql
+
+# Download and extract WordPress
+RUN wget https://wordpress.org/latest.tar.gz && \
+    tar -xzf latest.tar.gz -C /var/www/html/ && \
+    rm latest.tar.gz && \
+    mv /var/www/html/wordpress/* /var/www/html/ && \
+    rmdir /var/www/html/wordpress
+
+# Set appropriate permissions
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html
+
+# Copy custom Apache configuration (if any)
+# COPY apache-wordpress.conf /etc/apache2/sites-available/000-default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache2
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+
+!! Explanation:
+Base Image: Uses the latest official Ubuntu image.
+Install Packages:
+Apache2: Web server.
+PHP: Scripting language for WordPress.
+libapache2-mod-php: PHP module for Apache2.
+wget: Tool to download WordPress.
+php-mysql: PHP extension for MySQL (required for WordPress).
+WordPress Installation:
+Downloads the latest WordPress package.
+Extracts WordPress into the Apache web root directory (/var/www/html).
+Removes the tarball and cleans up.
+Permissions:
+Sets appropriate ownership and permissions for the WordPress files.
+Expose Port: Exposes port 80 for HTTP access.
+Start Apache2: Runs Apache2 in the foreground.  !!
+
+---------------------------------------------------------------------------------------------------------------------------
+                                 28 - Apache2 with WordPress and MariaDB
+---------------------------------------------------------------------------------------------------------------------------
+If you want to set up a Docker container that includes both WordPress and MariaDB (a popular alternative to MySQL), 
+you'll need to use Docker Compose to handle multiple services. Here’s a docker-compose.yml file to achieve this:
+
+version: '3.7'
+
+services:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "80:80"
+    volumes:
+      - wordpress-data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+    networks:
+      - wordpress-network
+
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - wordpress-network
+
+volumes:
+  wordpress-data:
+  db-data:
+
+networks:
+  wordpress-network:
+Explanation:
+WordPress Service:
+
+Uses the official WordPress Docker image.
+Maps port 80 on the host to port 80 in the container.
+Configures environment variables for database connection.
+Uses a named volume to persist WordPress data.
+MariaDB Service:
+
+Uses the official MariaDB Docker image.
+Configures environment variables for database credentials and database setup.
+Uses a named volume to persist database data.
+Volumes:
+
+wordpress-data: For persisting WordPress data.
+db-data: For persisting MariaDB data.
+Networks:
+
+Creates a network to enable communication between WordPress and MariaDB services.
+With Docker Compose, you can deploy both WordPress and MariaDB services with a single command:
+
+docker-compose up
+This setup provides a complete environment for running a WordPress site with a MariaDB database, simplifying the
+management of both services.
+---------------------------------------------------------------------------------------------------------------------------
+
+===========================================================================================================================

@@ -1,0 +1,86 @@
+-------------------------------------------------------------------
+## Docker Basics::
+-------------------------------------------------------------------
+1.Check the Docker version installed on your system:
+>> docker --version 
+
+2. Display system-wide information about Docker:
+>> docker info
+
+3. Get help on Docker commands:
+>> docker help
+
+-------------------------------------------------------------------
+## Docker Container Commands::
+-------------------------------------------------------------------
+1. Run a container from an image
+>> docker run [OPTIONS] IMAGE [COMMAND] [ARG...]: 
+!Example: docker run -d nginx (runs NGINX container in detached mode)
+
+2. List running containers:
+>> docker ps
+!Note:Add -a to list all containers (running and stopped)
+
+3. Stop a running container:
+>> docker stop [CONTAINER_ID] 
+
+4. Start a stopped container:
+>> docker start [CONTAINER_ID]
+
+5. Restart a container:
+>> docker restart [CONTAINER_ID] 
+
+6. Remove a container:
+>> docker rm [CONTAINER_ID] 
+
+7. Fetch logs from a container:
+>> docker logs [CONTAINER_ID] 
+
+-------------------------------------------------------------------
+## Docker Image Commands::
+-------------------------------------------------------------------
+1. Download an image from Docker Hub:
+>> docker pull [IMAGE_NAME] 
+
+2. List downloaded Docker images:
+>> docker images
+
+3. Remove an image:
+>> docker rmi [IMAGE_ID]
+
+4. Build an image from a Dockerfile:
+>> docker build [OPTIONS] PATH
+
+-------------------------------------------------------------------
+## Docker Volume Commands::
+-------------------------------------------------------------------
+1. Create a volume:
+>> docker volume create [VOLUME_NAME] 
+
+2. List all volumes:
+>> docker volume ls
+
+3. Remove a volume:
+>> docker volume rm [VOLUME_NAME]
+
+-------------------------------------------------------------------
+## Docker Network Commands::
+-------------------------------------------------------------------
+1. List all networks:
+>> docker network ls 
+
+2. Create a custom network:
+>> docker network create [NETWORK_NAME]
+
+3. Remove a network:
+>> docker network rm [NETWORK_NAME] 
+
+-------------------------------------------------------------------
+## Docker Compose Commands (if using Docker Compose)::
+-------------------------------------------------------------------
+1. Start containers as defined in a docker-compose.yml file:
+>> docker-compose up
+
+2. Stop and remove containers created by Docker Compose:
+>> docker-compose down
+===================================================================

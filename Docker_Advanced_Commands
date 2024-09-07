@@ -1,0 +1,210 @@
+===========================================================================================================================
+---------------------------------------------------------------------------------------------------------------------------
+				         Docker Advanced Commands
+---------------------------------------------------------------------------------------------------------------------------
+===========================================================================================================================
+					Docker Container Management
+===========================================================================================================================
+---------------------------------------------------------------------------------------------------------------------------
+1. Run a container and remove it automatically after it exits:
+
+>> docker run --rm [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+!Example: docker run --rm -it ubuntu /bin/bash (runs an Ubuntu container and removes it after exiting)
+---------------------------------------------------------------------------------------------------------------------------
+2. Run a container with a custom name:
+
+>> docker run --name [CONTAINER_NAME] [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+!Example: docker run --name my_container -d nginx (runs an NGINX container with the name my_container)
+---------------------------------------------------------------------------------------------------------------------------
+3. Update configuration of a running container:
+
+>> docker update [OPTIONS] [CONTAINER_ID]
+
+!Example: docker update --memory 512m my_container (updates the memory limit for my_container)
+---------------------------------------------------------------------------------------------------------------------------
+4. Copy files/folders between a container and the local filesystem:
+
+>> docker cp [CONTAINER_ID]:[SOURCE_PATH] [DEST_PATH]
+
+!Example: docker cp my_container:/app/logs /local/logs (copies logs from the container to the local filesystem)
+---------------------------------------------------------------------------------------------------------------------------
+5. Display running processes of a container:
+
+>> docker top [CONTAINER_ID]
+
+!Example: docker top my_container
+---------------------------------------------------------------------------------------------------------------------------
+6. Show detailed information about a container or image in JSON format
+
+>> docker inspect [CONTAINER_ID/IMAGE_ID]
+
+!Example: docker inspect my_container
+---------------------------------------------------------------------------------------------------------------------------
+7.. Pause a running container:
+
+>> docker pause [CONTAINER_ID]
+
+!Example: docker pause my_container
+---------------------------------------------------------------------------------------------------------------------------
+8. Unpause a paused container:
+
+>> docker unpause [CONTAINER_ID]
+
+!Example: docker unpause my_container
+---------------------------------------------------------------------------------------------------------------------------
+9. Show changes to files in a container’s filesystem:
+
+>> docker diff [CONTAINER_ID]
+
+!Example: docker diff my_container
+===========================================================================================================================
+						Docker Image Management
+===========================================================================================================================
+1. Build an image without using cache:
+
+>> docker build --no-cache [OPTIONS] PATH
+
+!Example: docker build --no-cache -t my_image:latest .
+---------------------------------------------------------------------------------------------------------------------------
+2. Squash all layers into a single new layer (requires experimental feature):
+
+>> docker build --squash [OPTIONS] PATH
+
+!Example: docker build --squash -t my_image:latest .
+---------------------------------------------------------------------------------------------------------------------------
+3. Push an image to a remote repository:
+
+>> docker push [IMAGE_NAME]
+
+!Example: docker push my_repo/my_image:latest
+---------------------------------------------------------------------------------------------------------------------------
+4. Pull an image from a remote repository:
+
+>> docker pull [IMAGE_NAME]
+
+!Example: docker pull my_repo/my_image:latest
+===========================================================================================================================
+						Docker Network Management
+===========================================================================================================================
+1. Create a network with a specific driver:
+
+>> docker network create --driver [DRIVER] [NETWORK_NAME]
+
+!Example: docker network create --driver overlay my_overlay_network
+---------------------------------------------------------------------------------------------------------------------------
+2. Connect a running container to a network:
+
+>> docker network connect [NETWORK_NAME] [CONTAINER_ID]
+
+!Example: docker network connect my_overlay_network my_container
+---------------------------------------------------------------------------------------------------------------------------
+3. Disconnect a running container from a network:
+
+>> docker network disconnect [NETWORK_NAME] [CONTAINER_ID]
+
+!Example: docker network disconnect my_overlay_network my_container
+---------------------------------------------------------------------------------------------------------------------------
+4. Remove a network:
+
+docker network rm [NETWORK_NAME]
+
+!Example: docker network rm my_overlay_network
+
+===========================================================================================================================
+					       Docker Volume Management
+===========================================================================================================================
+1. Create a volume with a specific driver:
+
+>> docker volume create --driver [DRIVER] [VOLUME_NAME]
+
+!Example: docker volume create --driver local my_volume
+---------------------------------------------------------------------------------------------------------------------------
+2. Remove a volume:
+
+>> docker volume rm [VOLUME_NAME]
+
+!Example: docker volume rm my_volume
+
+===========================================================================================================================
+						Docker System Management
+===========================================================================================================================
+1. Show disk usage by Docker:
+
+>> docker system df
+
+!Example: docker system df
+---------------------------------------------------------------------------------------------------------------------------
+2. Remove all unused data including images not referenced by any containers:
+
+docker system prune --all
+
+!Example: docker system prune --all
+---------------------------------------------------------------------------------------------------------------------------
+3. Monitor Docker events in real-time:
+
+>> docker system events
+
+!Example: docker system events
+
+===========================================================================================================================
+						Docker Compose Commands
+===========================================================================================================================
+1. Start containers in detached mode:
+
+>> docker-compose up -d
+
+!Example: docker-compose up -d
+---------------------------------------------------------------------------------------------------------------------------
+2. Rebuild images before starting services:
+
+>> docker-compose up --build
+
+!Example: docker-compose up --build
+---------------------------------------------------------------------------------------------------------------------------
+3. Scale a service to the specified number of replicas:
+
+>> docker-compose up --scale [SERVICE]=[NUMBER]
+
+!Example: docker-compose up --scale web=3
+---------------------------------------------------------------------------------------------------------------------------
+4. Stop and remove containers and associated volumes:
+
+>> docker-compose down --volumes
+
+!Example: docker-compose down --volumes
+---------------------------------------------------------------------------------------------------------------------------
+5. Remove containers for services not defined in the docker-compose.yml file:
+
+>> docker-compose down --remove-orphans
+
+!Example: docker-compose down --remove-orphans
+
+===========================================================================================================================
+					     Docker Registry Management
+===========================================================================================================================
+1. Authenticate with a Docker registry:
+
+>> docker login [REGISTRY_URL]
+
+!Example: docker login myregistry.example.com
+---------------------------------------------------------------------------------------------------------------------------
+2. Log out from a Docker registry:
+
+>> docker logout [REGISTRY_URL]
+
+!Example: docker logout myregistry.example.com
+---------------------------------------------------------------------------------------------------------------------------
+3. Tag an image for pushing to a specific registry:
+
+>> docker tag [SOURCE_IMAGE] [REGISTRY_URL]/[TARGET_IMAGE]
+
+!Example: docker tag my_image:latest myregistry.example.com/my_image:latest
+---------------------------------------------------------------------------------------------------------------------------
+4. Push an image to a specific registry:
+
+>> docker push [REGISTRY_URL]/[IMAGE_NAME]
+
+!Example: docker push myregistry.example.com/my_image:latest
+---------------------------------------------------------------------------------------------------------------------------

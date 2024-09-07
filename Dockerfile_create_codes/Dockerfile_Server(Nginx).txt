@@ -1,0 +1,484 @@
+===================================================================
+-------------------------------------------------------------------
+Dockerfile For all Linux OS with only Nginx Server
+OS: Ubuntu:Latest	Server: Nginx
+-------------------------------------------------------------------
+===================================================================
+
+-------------------------------------------------------------------
+Dockerfile - 01 Basic Dockerfile for Nginx
+-------------------------------------------------------------------
+
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy the local index.html to the container
+COPY index.html /var/www/html/
+
+# Expose port 80 to allow access to the web server
+EXPOSE 80
+
+# Start Nginx when the container starts
+CMD ["nginx", "-g", "daemon off;"]
+
+-------------------------------------------------------------------
+Docker file - 02 Dockerfile with Custom Nginx Configuration
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy the local index.html and custom Nginx configuration
+COPY index.html /var/www/html/
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+-------------------------------------------------------------------
+Dockerfile - 03 Dockerfile with SSL Support
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx and OpenSSL
+RUN apt-get update && apt-get install -y nginx openssl
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy the local index.html and SSL certificates
+COPY index.html /var/www/html/
+COPY ssl /etc/nginx/ssl/
+
+# Copy custom Nginx configuration for SSL
+COPY nginx-ssl.conf /etc/nginx/nginx.conf
+
+# Expose ports 80 and 443
+EXPOSE 80 443
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+-------------------------------------------------------------------
+
+Dockerfile - 04 Dockerfile with Multi-stage Build (for Larger Applications)
+-------------------------------------------------------------------
+# Stage 1: Build
+FROM ubuntu:latest AS build
+
+# Install Nginx and build dependencies
+RUN apt-get update && apt-get install -y nginx
+
+# Stage 2: Final
+FROM ubuntu:latest
+
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy Nginx files from build stage
+COPY --from=build /etc/nginx /etc/nginx
+
+# Copy the local index.html to the container
+COPY index.html /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+-------------------------------------------------------------------
+Dockerfile - 05 Dockerfile with User Management
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Create a new user and group
+RUN groupadd -r nginx && useradd -r -g nginx nginx
+
+# Change ownership of web directory
+RUN chown -R nginx:nginx /var/www/html
+
+# Copy the local index.html to the container
+COPY index.html /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx as the non-root user
+USER nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+-------------------------------------------------------------------
+Dockerfile - 06 Dockerfile with Custom Error Pages
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy the local index.html and custom error pages
+COPY index.html /var/www/html/
+COPY errors /usr/share/nginx/html/errors
+
+# Copy custom Nginx configuration
+COPY nginx-errors.conf /etc/nginx/nginx.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+-------------------------------------------------------------------
+Dockerfile - 07 Dockerfile with Environment Variables
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Set environment variables
+ENV NGINX_PORT=80
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy the local index.html to the container
+COPY index.html /var/www/html/
+
+# Expose port from environment variable
+EXPOSE ${NGINX_PORT}
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+-------------------------------------------------------------------
+Dockerfile - 08 Dockerfile with Logging Configuration
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy the local index.html and custom Nginx log configuration
+COPY index.html /var/www/html/
+COPY nginx-logs.conf /etc/nginx/conf.d/logging.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+-------------------------------------------------------------------
+Dockerfile - 09 Dockerfile with Nginx and PHP-FPM
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx and PHP-FPM
+RUN apt-get update && \
+    apt-get install -y nginx php-fpm
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy the local index.php to the container
+COPY index.php /var/www/html/
+
+# Copy Nginx configuration for PHP-FPM
+COPY nginx-php.conf /etc/nginx/sites-available/default
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx and PHP-FPM
+CMD ["sh", "-c", "service php7.4-fpm start && nginx -g 'daemon off;'"]
+
+-------------------------------------------------------------------
+Dockerfile - 10 Dockerfile with Multiple Nginx Configurations
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy local HTML files and multiple Nginx configurations
+COPY index.html /var/www/html/
+COPY nginx-default.conf /etc/nginx/sites-available/default
+COPY nginx-site1.conf /etc/nginx/sites-available/site1.conf
+COPY nginx-site2.conf /etc/nginx/sites-available/site2.conf
+
+# Create symbolic links for the sites-enabled
+RUN ln -s /etc/nginx/sites-available/site1.conf /etc/nginx/sites-enabled/
+RUN ln -s /etc/nginx/sites-available/site2.conf /etc/nginx/sites-enabled/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+
+-------------------------------------------------------------------
+Dockerfile - 11 Dockerfile with Node.js and Nginx
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx and Node.js
+RUN apt-get update && \
+    apt-get install -y nginx curl
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy local application files
+COPY index.html /var/www/html/
+COPY app /app
+
+# Set working directory
+WORKDIR /app
+
+# Install application dependencies
+RUN npm install
+
+# Copy Nginx configuration
+COPY nginx-node.conf /etc/nginx/sites-available/default
+
+# Expose ports
+EXPOSE 80 3000
+
+# Start Nginx and Node.js
+CMD ["sh", "-c", "node /app/server.js & nginx -g 'daemon off;'"]
+
+-------------------------------------------------------------------
+Dockerfile - 12 Dockerfile with Nginx and a Static Site Generator
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx and a static site generator (e.g., Hugo)
+RUN apt-get update && \
+    apt-get install -y nginx hugo
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy local Hugo site and build it
+COPY site /site
+WORKDIR /site
+RUN hugo
+
+# Copy built site to Nginx directory
+RUN cp -r /site/public/* /var/www/html/
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+-------------------------------------------------------------------
+Dockerfile - 13 Dockerfile with Custom Nginx Modules
+-------------------------------------------------------------------
+
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install necessary build tools and Nginx
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    nginx \
+    libnginx-mod-http-lua
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy the local index.html and Nginx modules configuration
+COPY index.html /var/www/html/
+COPY nginx-custom.conf /etc/nginx/nginx.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+
+-------------------------------------------------------------------
+Dockerfile - 14 Dockerfile with Nginx and Redis
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx and Redis
+RUN apt-get update && \
+    apt-get install -y nginx redis-server
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy local files and configurations
+COPY index.html /var/www/html/
+COPY redis.conf /etc/redis/redis.conf
+COPY nginx-redis.conf /etc/nginx/sites-available/default
+
+# Expose ports for Nginx and Redis
+EXPOSE 80 6379
+
+# Start Nginx and Redis
+CMD ["sh", "-c", "redis-server /etc/redis/redis.conf & nginx -g 'daemon off;'"]
+
+-------------------------------------------------------------------
+Dockerfile - 15 Dockerfile with Nginx and PostgreSQL
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx and PostgreSQL
+RUN apt-get update && \
+    apt-get install -y nginx postgresql postgresql-contrib
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy local files and configurations
+COPY index.html /var/www/html/
+COPY postgresql.conf /etc/postgresql/postgresql.conf
+COPY nginx-postgres.conf /etc/nginx/sites-available/default
+
+# Expose ports for Nginx and PostgreSQL
+EXPOSE 80 5432
+
+# Start PostgreSQL and Nginx
+CMD ["sh", "-c", "service postgresql start && nginx -g 'daemon off;'"]
+
+-------------------------------------------------------------------
+Dockerfile - 16 Dockerfile with Nginx and Python Flask
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx, Python, and Flask
+RUN apt-get update && \
+    apt-get install -y nginx python3 python3-pip && \
+    pip3 install flask
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy local files
+COPY index.html /var/www/html/
+COPY app /app
+
+# Set working directory and copy Flask app
+WORKDIR /app
+COPY app.py /app/
+
+# Expose ports for Nginx and Flask
+EXPOSE 80 5000
+
+# Start Nginx and Flask
+CMD ["sh", "-c", "python3 /app/app.py & nginx -g 'daemon off;'"]
+
+-------------------------------------------------------------------
+Dockerfile - 17 Dockerfile with Nginx and MongoDB
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx and MongoDB
+RUN apt-get update && \
+    apt-get install -y nginx mongodb
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy local files and configurations
+COPY index.html /var/www/html/
+COPY mongod.conf /etc/mongod.conf
+COPY nginx-mongo.conf /etc/nginx/sites-available/default
+
+# Expose ports for Nginx and MongoDB
+EXPOSE 80 27017
+
+# Start MongoDB and Nginx
+CMD ["sh", "-c", "mongod --config /etc/mongod.conf & nginx -g 'daemon off;'"]
+
+-------------------------------------------------------------------
+Dockerfile - 18 Dockerfile with Nginx and a Node.js App with PM2
+-------------------------------------------------------------------
+# Use the official Ubuntu base image
+FROM ubuntu:latest
+
+# Install Nginx, Node.js, and PM2
+RUN apt-get update && \
+    apt-get install -y nginx curl && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g pm2
+
+# Remove the default Nginx web page
+RUN rm -rf /var/www/html/*
+
+# Copy local files
+COPY index.html /var/www/html/
+COPY app /app
+
+# Set working directory and install Node.js dependencies
+WORKDIR /app
+COPY package.json /app/
+RUN npm install
+
+# Copy application files
+COPY . /app/
+
+# Expose ports for Nginx and Node.js
+EXPOSE 80 3000
+
+# Start Nginx and the Node.js app with PM2
+CMD ["sh", "-c", "pm2 start /app/server.js --name 'node-app' && nginx -g 'daemon off;'"]
+-------------------------------------------------------------------
+===================================================================
